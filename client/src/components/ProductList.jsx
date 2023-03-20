@@ -7,6 +7,15 @@ const ProductList = (props) => {
     const {products, setProducts} = props
     const navigate = useNavigate();
 
+    const deleteProduct = (id) => {
+        axios.delete(`http://localhost:8000/api/products/${id}`)
+            .then(res => {
+                const filteredProducts = products.filter(product => product._id !== id)
+                setProducts(filteredProducts)
+            })
+            .catch(err => console.log(err))
+    }
+
     useEffect(() => {
         axios.get('http://localhost:8000/api/products')
             .then((res) => {
@@ -40,6 +49,8 @@ const ProductList = (props) => {
                                 <td>{product.price}</td>
                                 <td>{product.description}</td>
                                 <td><Link to={`/products/${product._id}`}>{product.title}'s Page</Link></td>
+                                <td><Link to={`/products/edit/${product._id}`}>Edit {product.title}</Link></td>
+                                <button className="btn-danger" onClick={() => deleteProduct(product._id)}>Delete</button>
                             </tr>
                         )
                     })}
